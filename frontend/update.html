@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <script src="script.js" defer></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous" />
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <title>frontend</title>
+</head>
+
+<body>
+  <div class="container px-5 py-5">
+    <h1>Update Data</h1>
+    <form id="updateForm" method="post">
+      <input type="hidden" id="customer_idUpdate">
+      <div class="form-outline mb-4">
+        <label class="form-label" for="perusahaanUpdate">Nama Perusahaan</label>
+        <input id="perusahaanUpdate" type="text" class="form-control" />
+      </div>
+
+      <div class="form-outline mb-4">
+        <label class="form-label" for="jenis_barangUpdate">Jenis Barang</label>
+        <input id="jenis_barangUpdate" type="text" class="form-control" />
+      </div>
+
+      <div class="form-outline mb-4">
+        <label class="form-label" for="tanggal_masukUpdate">Tanggal Masuk</label>
+        <input id="tanggal_masukUpdate" type="date" class="form-control" />
+      </div>
+
+      <!-- Number input -->
+      <div class="form-outline mb-4">
+        <label class="form-label" for="tanggal_keluarUpdate">Tanggal Keluar</label>
+        <input id="tanggal_keluarUpdate" type="date" class="form-control" />
+      </div>
+
+      <!-- Message input -->
+      <div class="form-outline mb-4">
+        <label class="form-label" for="kuantitiUpdate">Kuantiti</label>
+        <input type="number" id="kuantitiUpdate" class="form-control" />
+      </div>
+
+      <!-- Submit button -->
+      <button id="updateBtn" type="submit" class="btn btn-primary btn-block mb-4">
+        Update Data
+      </button>
+    </form>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+    crossorigin="anonymous"></script>
+  <script>
+    /*******************HANDLE FORM UPDATE********************/
+    $(document).ready(function () {
+      const queryString = window.location.search;
+      const urlParams = new URLSearchParams(queryString);
+      const customer_idURL = urlParams.get("customer_id");
+      loadDataUpdate(customer_idURL);
+      // console.log(customer_idURL);
+
+      $('#updateBtn').on("click", function () {
+        const customer_id = $("#customer_idUpdate").val();
+        const perusahaan = $("#perusahaanUpdate").val();
+        const jenis_barang = $("#jenis_barangUpdate").val();
+        const tanggal_masuk = $("#tanggal_masukUpdate").val();
+        const tanggal_keluar = $("#tanggal_keluarUpdate").val();
+        const kuantiti = $("#kuantitiUpdate").val();
+
+        console.log(customer_id)
+
+        // Send the data with AJAX
+        $.ajax({
+          type: "POST",
+          url: "http://localhost/wilsonTest/backend/update.php",
+          data: {
+            customer_id: customer_id,
+            perusahaan: perusahaan,
+            jenis_barang: jenis_barang,
+            tanggal_masuk: tanggal_masuk,
+            tanggal_keluar: tanggal_keluar,
+            kuantiti: kuantiti,
+          },
+          success: function (response) {
+            // Handle the response from the server
+            console.log(response);
+            // Redirect to the index page
+            window.location.href = "index.html";
+          },
+          error: function (xhr, status, error) {
+            // Handle the error
+            console.log(error);
+          },
+        });
+        return false;
+      });
+
+      function loadDataUpdate(customer_id) {
+        // Load data for the customer using jQuery AJAX
+        $.ajax({
+          url: "http://localhost/wilsonTest/backend/read_single.php",
+          type: "GET",
+          data: { customer_id: customer_id },
+          dataType: "json",
+          success: function (data) {
+            // Set the form values with the existing data
+            $("#perusahaanUpdate").val(data[0].perusahaan);
+            $("#jenis_barangUpdate").val(data[0].jenis_barang);
+            $("#tanggal_masukUpdate").val(data[0].tanggal_masuk);
+            $("#tanggal_keluarUpdate").val(data[0].tanggal_keluar);
+            $("#kuantitiUpdate").val(data[0].kuantiti);
+            $("#customer_idUpdate").val(data[0].customer_id);
+          },
+          error: function (xhr, status, error) {
+            console.log("Error loading data");
+          },
+        });
+      }
+
+    })
+
+
+
+  </script>
+</body>
+
+</html>
