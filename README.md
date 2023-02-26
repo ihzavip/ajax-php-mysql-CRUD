@@ -1,7 +1,9 @@
 its my template for
 
 Frontend: Bootstrap, AJAX, jQuery
+
 Backend: PHP
+
 Database: MySQL
 
 I ran it on XAMPP, most of the guide will be commented on the line. 
